@@ -1,5 +1,5 @@
 # Godot-Mod-Loader
-An app that can patch mods into godot apps (encrypted apps too)!
+An application that can patch mods into godot apps (encrypted apps too)!  
 credit goes to [DmitriySalnikov's GodotPCKExplorer](https://github.com/DmitriySalnikov/GodotPCKExplorer) for doing the heavy lifting.
 
 ## How to use
