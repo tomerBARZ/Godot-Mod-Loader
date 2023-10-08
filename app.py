@@ -1,8 +1,8 @@
 import os
 import tempfile
-import tkinter as tk
+import ttkbootstrap as ttk
+from ttkbootstrap.scrolled import ScrolledText
 from tkinter import filedialog
-from tkinter import scrolledtext 
 import subprocess
 import shutil
 
@@ -42,9 +42,9 @@ def select_mods_files():
         mods_paths = file_paths
         if len(mods_paths) > 0:
             list_loaded(mods_paths)  # Assuming you have a function to list the selected files
-            third_button.config(fg="green")
+            third_button.config(bootstyle="success")
         else:
-            third_button.config(fg="red")
+            third_button.config(bootstyle="danger")
 
 def select_mods_folder():
     global mods_path
@@ -53,32 +53,32 @@ def select_mods_folder():
         mods_path = folder_path
         if(len(os.listdir(folder_path)) > 0):
             list_files(mods_path)
-            third_button.config(fg="green")
+            third_button.config(bootstyle="success")
         else:
-            third_button.config(fg="red")
+            third_button.config(bootstyle="danger")
 
 def list_loaded(files):
-    file_text.delete(1.0, tk.END)  # Clear the scrolled text
+    file_text.delete(1.0, ttk.END)  # Clear the scrolled text
 
     for file in files:
-        file_text.insert(tk.END, file.split("/")[-1] + "\n")
+        file_text.insert(ttk.END, file.split("/")[-1] + "\n")
 
 def list_files(folder_path):
-    file_text.delete(1.0, tk.END)  # Clear the scrolled text
+    file_text.delete(1.0, ttk.END)  # Clear the scrolled text
 
     try:
         files = os.listdir(folder_path)
         for file in files:
-            file_text.insert(tk.END, file + "\n")
+            file_text.insert(ttk.END, file + "\n")
     except Exception as e:
-        file_text.insert(tk.END, f"Error: {str(e)}")
+        file_text.insert(ttk.END, f"Error: {str(e)}")
 
 def runPCKE(params):
     command = f'"{os.path.join(os.getcwd(), "resources", "pcke.exe")}" {params}'    
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 
     for line in process.stdout:
-        status_label.config(text=line.decode().strip(), fg="blue")
+        status_label.config(text=line.decode().strip())
         app.update_idletasks()
     
     app.update_idletasks()
@@ -94,26 +94,26 @@ def patch_files():
     if(output_path == ""):
         return
     
-    status_label.config(text="SPLITTING APP", fg="blue")
+    status_label.config(text="SPLITTING APP")
     app.update_idletasks()
     runPCKE(f" -s \"{game_path}\" \"{temp_dir}\split.exe\"")
 
-    status_label.config(text="EXTRACTING APP", fg="blue")
+    status_label.config(text="EXTRACTING APP")
     app.update_idletasks()
     runPCKE(f" -e \"{temp_dir}\split.pck\" \"{temp_dir}\extracted\"")
 
     for file in mods_paths:
-        status_label.config(text="LOADING MOD "+ file , fg="blue")
+        status_label.config(text="LOADING MOD "+ file)
         app.update_idletasks()
         runPCKE(f" -e \"{file}\" \"{temp_dir}\extracted\"")
 
-    status_label.config(text="PACKING APP", fg="blue")
+    status_label.config(text="PACKING APP")
     app.update_idletasks()
     runPCKE(f" -pe \"{temp_dir}/extracted\" \"{temp_dir}/split.exe\" 1.3.5.0")
 
     error = None
     try:
-        status_label.config(text="COPYING FILES TO OUTPUT DIRECTORY", fg="blue")
+        status_label.config(text="COPYING FILES TO OUTPUT DIRECTORY")
         app.update_idletasks()
         shutil.copy(f'{temp_dir}\\split.exe', output_path)
     except Exception as e:
@@ -121,45 +121,47 @@ def patch_files():
     shutil.rmtree(temp_dir)
 
     if error is None:
-        status_label.config(text="DONE PATCHING MODS\nYOU CAN NOW CLOSE THIS WINDOW", fg="green")
+        status_label.config(text="DONE PATCHING MODS\nYOU CAN NOW CLOSE THIS WINDOW", bootstyle="success")
     else:
-        status_label.config(text="AN ERROR OCCURED\n"+error, fg="red")
+        status_label.config(text="AN ERROR OCCURED\n"+error, bootstyle="danger")
     app.update_idletasks()
 
 def clear_list():
-    file_text.delete(1.0, tk.END)
+    file_text.delete(1.0, ttk.END)
 
-app = tk.Tk()
+app = ttk.Window()
+ttk.Style(theme='darkly')
+
 app.title("Godot Mod Loader")
 
 app.geometry(f"{appsize[0]}x{appsize[1]}")
 app.resizable(width=False, height=False)
 
-title_label = tk.Label(app, text="Godot Mod Loader",  font=("Helvetica", 16))
+title_label = ttk.Label(app, text="Godot Mod Loader",  font=("Helvetica", 16))
 title_label.pack(pady=5)
 
-frame = tk.Frame(app)
+frame = ttk.Frame(app)
 frame.pack()
 
-frame2 = tk.Frame(app)
+frame2 = ttk.Frame(app)
 frame2.pack()
 
-frame3 = tk.Frame(app)
+frame3 = ttk.Frame(app)
 frame3.pack()
 
-frame4 = tk.Frame(app)
+frame4 = ttk.Frame(app)
 frame4.pack()
 
-select_button = tk.Button(frame, text="Select Mods", command=select_mods_files)
-select_button.pack(side=tk.LEFT, padx=5)
+select_button = ttk.Button(frame, text="Select Mods", command=select_mods_files)
+select_button.pack(side=ttk.LEFT, padx=5)
 
-file_text = scrolledtext.ScrolledText(frame2, width=50, height=10)
+file_text = ScrolledText(frame2, width=50, height=10)
 file_text.pack()
 
-third_button = tk.Button(frame, text="Patch", command=patch_files, fg="red")
+third_button = ttk.Button(frame, text="Patch", command=patch_files, bootstyle="danger")
 third_button.pack(padx=10, pady=5)
 
-status_label = tk.Label(frame3, text="STATUS",wraplength=200,  font=("Helvetica", 8))
+status_label = ttk.Label(frame3, text="",wraplength=200,  font=("Helvetica", 8),bootstyle="info")
 status_label.pack(pady=5)
 
 app.mainloop()
