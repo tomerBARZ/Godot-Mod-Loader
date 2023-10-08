@@ -131,7 +131,6 @@ def clear_list():
 
 app = ttk.Window()
 ttk.Style(theme='darkly')
-app.iconbitmap(os.path.join(os.getcwd(),"resources", "godot black.ico"))
 
 app.title("Godot Mod Loader")
 
