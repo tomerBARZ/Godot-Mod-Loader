@@ -1,4 +1,5 @@
 import os
+import sys
 import tempfile
 import ttkbootstrap as ttk
 from ttkbootstrap.scrolled import ScrolledText
@@ -74,7 +75,15 @@ def list_files(folder_path):
         file_text.insert(ttk.END, f"Error: {str(e)}")
 
 def runPCKE(params):
-    command = f'"{os.path.join(os.getcwd(), "resources", "pcke.exe")}" {params}'    
+    if getattr(sys, 'frozen', False):  # Check if running as an executable
+        # If running as an executable, use sys._MEIPASS to locate the resources folder
+        resources_dir = os.path.join(sys._MEIPASS, 'resources')
+    else:
+        # If running as a script, use a relative path to the resources folder
+        resources_dir = os.path.join(os.getcwd(), 'resources')
+
+    pcke_exe = os.path.join(resources_dir, 'pcke.exe')
+    command = f'"{pcke_exe}" {params}'    
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 
     for line in process.stdout:
