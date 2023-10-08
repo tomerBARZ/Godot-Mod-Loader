@@ -132,7 +132,8 @@ def patch_files():
     if error is None:
         status_label.config(text="DONE PATCHING MODS\nYOU CAN NOW CLOSE THIS WINDOW", bootstyle="success")
     else:
-        status_label.config(text="AN ERROR OCCURED\n"+error, bootstyle="danger")
+        status_label.config(text="AN ERROR OCCURED\n"+str(error), bootstyle="danger")
+        print(error)
     app.update_idletasks()
 
 def clear_list():
