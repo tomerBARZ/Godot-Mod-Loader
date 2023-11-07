@@ -2,6 +2,10 @@
 An application that can patch mods into godot apps (encrypted apps too)!  
 credit goes to [DmitriySalnikov's GodotPCKExplorer](https://github.com/DmitriySalnikov/GodotPCKExplorer) for doing the heavy lifting.
 
+## Installation
+1. Download as ZIP
+2. Install the required python packages.
+
 ## Creating mods
 1. Open Godot
 2. Make modifications
